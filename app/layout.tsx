@@ -32,22 +32,23 @@ export const metadata: Metadata = {
 };
 
 import "./globals.css";
+import { ThemeProvider } from "@/context/ThemeProvider";
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   return (
-    <ClerkProvider
-      appearance={{
-        elements: {
-          formButtonPrimary: "primary-gradient",
-          footerActionLink: "primary-test-gradient hover:text-primary-500",
-        },
-      }}
-    >
-      <html lang="en">
-        <body className={`${inter.variable} ${spaceGrotesk.variable}`}>
+    <html lang="en">
+      <body className={`${inter.variable} ${spaceGrotesk.variable}`}>
+        <ClerkProvider
+          appearance={{
+            elements: {
+              formButtonPrimary: "primary-gradient",
+              footerActionLink: "primary-test-gradient hover:text-primary-500",
+            },
+          }}
+        >
           <SignedOut>
             <SignInButton />
           </SignedOut>
@@ -55,9 +56,9 @@ export default function RootLayout({
             <UserButton />
           </SignedIn>
           <h1 className="h1-bold">This is the piece of text</h1>
-          {children}
-        </body>
-      </html>
-    </ClerkProvider>
+          <ThemeProvider>{children}</ThemeProvider>
+        </ClerkProvider>
+      </body>
+    </html>
   );
 }
