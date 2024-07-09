@@ -33,6 +33,7 @@ export const metadata: Metadata = {
 
 import "./globals.css";
 import { ThemeProvider } from "@/context/ThemeProvider";
+
 export default function RootLayout({
   children,
 }: {
@@ -49,13 +50,6 @@ export default function RootLayout({
             },
           }}
         >
-          <SignedOut>
-            <SignInButton />
-          </SignedOut>
-          <SignedIn>
-            <UserButton />
-          </SignedIn>
-          <h1 className="h1-bold">This is the piece of text</h1>
           <ThemeProvider>{children}</ThemeProvider>
         </ClerkProvider>
       </body>
