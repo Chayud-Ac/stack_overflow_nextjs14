@@ -6,45 +6,50 @@ import { HomePageFilters } from "@/constants/filters";
 import HomeFilter from "@/components/home/HomeFilter";
 import NoResults from "@/components/shared/NoResults";
 import QuestionCard from "@/components/cards/QuestionCard";
+import { getQuestions } from "@/lib/actions/question.action";
 
-export default function Home() {
-  const questions = [
-    {
-      _id: "1",
-      title: "Cascading Deletes in SQLAlchemy",
-      tags: [
-        { _id: "1", name: "python" },
-        { _id: "2", name: "sql" },
-      ],
-      author: {
-        _id: "1",
-        name: "John Doe",
-        picture: "https://example.com/picture1.jpg",
-      },
-      upvotes: 10,
-      views: 1000,
-      answer: [],
-      createAt: new Date("2021-09-01T00:00:00Z"),
-    },
-    {
-      _id: "2",
-      title: "How to Use React Hooks",
-      tags: [
-        { _id: "3", name: "react" },
-        { _id: "4", name: "javascript" },
-      ],
-      author: {
-        _id: "3",
-        name: "Alice Smith",
-        picture: "https://example.com/picture3.jpg",
-      },
+export default async function Home() {
+  const result = await getQuestions({});
+  let questions = result?.questions || [];
+  questions = JSON.parse(JSON.stringify(questions));
+  console.log(questions);
+  // const questions = [
+  //   {
+  //     _id: "1",
+  //     title: "Cascading Deletes in SQLAlchemy",
+  //     tags: [
+  //       { _id: "1", name: "python" },
+  //       { _id: "2", name: "sql" },
+  //     ],
+  //     author: {
+  //       _id: "1",
+  //       name: "John Doe",
+  //       picture: "https://example.com/picture1.jpg",
+  //     },
+  //     upvotes: 10,
+  //     views: 1000,
+  //     answer: [],
+  //     createAt: new Date("2021-09-01T00:00:00Z"),
+  //   },
+  //   {
+  //     _id: "2",
+  //     title: "How to Use React Hooks",
+  //     tags: [
+  //       { _id: "3", name: "react" },
+  //       { _id: "4", name: "javascript" },
+  //     ],
+  //     author: {
+  //       _id: "3",
+  //       name: "Alice Smith",
+  //       picture: "https://example.com/picture3.jpg",
+  //     },
 
-      upvotes: 25,
-      views: 30000,
-      answer: [],
-      createAt: new Date("2021-09-05T00:00:00Z"),
-    },
-  ];
+  //     upvotes: 25,
+  //     views: 30000,
+  //     answer: [],
+  //     createAt: new Date("2021-09-05T00:00:00Z"),
+  //   },
+  // ];
 
   return (
     <>
@@ -84,10 +89,10 @@ export default function Home() {
               title={question.title}
               tags={question.tags}
               author={question.author}
-              upvotes={question.upvotes}
+              upvoted={question.upvoted}
               views={question.views}
               answer={question.answer}
-              createAt={question.createAt}
+              createdAt={question.createdAt}
             />
           ))
         ) : (
