@@ -13,6 +13,7 @@ export default async function Home() {
   let questions = result?.questions || [];
   questions = JSON.parse(JSON.stringify(questions));
   console.log(questions);
+
   // const questions = [
   //   {
   //     _id: "1",

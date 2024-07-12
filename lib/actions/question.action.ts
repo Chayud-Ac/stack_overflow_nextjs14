@@ -13,6 +13,7 @@ export async function getQuestions(params: GetQuestionsParams) {
       .populate({ path: "tags", model: Tag }) // populate is use to get all the information of the ref model. as tag key that store in question model only store id of key
       .populate({ path: "author", model: User }); // populate is use to get all the information of the ref model. as User key that store in question model only store id of User
 
+    console.log("data sending from the Mongo", { questions });
     return { questions };
   } catch (error) {
     console.log(error);

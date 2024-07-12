@@ -37,6 +37,9 @@ const QuestionCard = ({
   answer = answer || [];
   upvoted = upvoted || 0;
 
+  console.log(author);
+  console.log(tags);
+
   return (
     <div className="card-warpper p-9 sm:px-11 rounded-[10px]">
       <div className="flex flex-col-reverse items-start justify-between gap-5 sm:flex-ros">
