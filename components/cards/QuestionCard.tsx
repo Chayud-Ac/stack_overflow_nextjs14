@@ -17,7 +17,7 @@ interface QuestionPages {
     name: string;
     picture: string;
   };
-  upvoted?: number;
+  upvoted?: string[];
   views?: number;
   answer?: object[];
   createdAt: string;
@@ -35,10 +35,7 @@ const QuestionCard = ({
 }: QuestionPages) => {
   views = views || 0;
   answer = answer || [];
-  upvoted = upvoted || 0;
-
-  console.log(author);
-  console.log(tags);
+  upvoted = upvoted || [];
 
   return (
     <div className="card-warpper p-9 sm:px-11 rounded-[10px]">
@@ -73,13 +70,13 @@ const QuestionCard = ({
         <Metric
           imgUrl="/assets/icons/like.svg"
           alt="upvoted"
-          value={formatLargeNumber(upvoted)}
+          value={formatLargeNumber(upvoted.length)}
           title="Votes"
           textStyles="small-medium text-dark400_light800"
         />
         <Metric
           imgUrl="/assets/icons/message.svg"
-          alt="Upvotes"
+          alt="message"
           value={formatLargeNumber(answer.length)}
           title="Answers"
           textStyles="small-medium text-dark400_light800"
