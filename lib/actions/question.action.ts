@@ -42,7 +42,7 @@ export async function createQuestion(params: CreateQuestionParams) {
     for (const tag of tags) {
       const existingTag = await Tag.findOneAndUpdate(
         { name: { $regex: new RegExp(`^${tag}$`, "i") } }, // case insensitive
-        { $setOnInsert: { name: tag }, $push: { question: question._id } },
+        { $setOnInsert: { name: tag }, $push: { questions: question._id } },
         { upsert: true, new: true }
       );
       tagDocuments.push(existingTag._id);
@@ -77,14 +77,14 @@ export async function upvoteQuestion(params: QuestionVoteParams) {
     let updateQuery = {};
 
     if (hasupVoted) {
-      updateQuery = { $pull: { upvoted: userId } };
+      updateQuery = { $pull: { upvotes: userId } };
     } else if (hasdownVoted) {
       updateQuery = {
-        $pull: { downvoted: userId },
-        $push: { upvoted: userId },
+        $pull: { downvotes: userId },
+        $push: { upvotes: userId },
       };
     } else {
-      updateQuery = { $addToSet: { upvoted: userId } };
+      updateQuery = { $addToSet: { upvotes: userId } };
     }
 
     const question = await Question.findByIdAndUpdate(questionId, updateQuery, {
@@ -109,14 +109,14 @@ export async function downvoteQuestion(params: QuestionVoteParams) {
     let updateQuery = {};
 
     if (hasdownVoted) {
-      updateQuery = { $pull: { downvoted: userId } };
+      updateQuery = { $pull: { downvotes: userId } };
     } else if (hasupVoted) {
       updateQuery = {
-        $pull: { upvoted: userId },
-        $push: { downvoted: userId },
+        $pull: { upvotes: userId },
+        $push: { downvotes: userId },
       };
     } else {
-      updateQuery = { $addToSet: { downvoted: userId } };
+      updateQuery = { $addToSet: { downvotes: userId } };
     }
 
     const question = await Question.findByIdAndUpdate(questionId, updateQuery, {

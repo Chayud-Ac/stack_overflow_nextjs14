@@ -30,7 +30,7 @@ const Page = async ({ params, searchParams }: any) => {
   }
 
   console.log(JSON.stringify(mongoUser._id));
-  console.log(result.upvoted);
+  console.log(result.upvotes);
 
   return (
     <>
@@ -56,10 +56,10 @@ const Page = async ({ params, searchParams }: any) => {
               type="Question"
               itemId={JSON.stringify(result._id)}
               userId={JSON.stringify(mongoUser._id)}
-              upvotes={result.upvoted.length}
-              hasupVoted={result.upvoted.includes(mongoUser._id)}
-              downvotes={result.downvoted.length}
-              hasdownVoted={result.downvoted.includes(mongoUser._id)}
+              upvotes={result.upvotes.length}
+              hasupVoted={result.upvotes.includes(mongoUser._id)}
+              downvotes={result.downvotes.length}
+              hasdownVoted={result.downvotes.includes(mongoUser._id)}
               hasSaved={mongoUser?.saved.includes(result._id)}
             />
           </div>
