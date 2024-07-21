@@ -44,3 +44,15 @@ export const formatLargeNumber = (num: number): string => {
     return num.toString();
   }
 };
+
+export function formatJoinDate(date: Date): string {
+  if (!(date instanceof Date)) {
+    throw new Error("Invalid date object");
+  }
+
+  const options: Intl.DateTimeFormatOptions = {
+    year: "numeric",
+    month: "long",
+  };
+  return date.toLocaleDateString(undefined, options);
+}

@@ -4,8 +4,11 @@ import RenderTag from "../shared/RenderTag";
 import Metric from "../shared/Metric";
 import { getTimestamp } from "@/lib/utils";
 import { formatLargeNumber } from "@/lib/utils";
+import EditDeleteAction from "../shared/EditDeleteAction";
+import { SignedIn } from "@clerk/nextjs";
 
 interface QuestionPages {
+  clerkId?: string | null;
   _id: string;
   title: string;
   tags: {
@@ -16,6 +19,7 @@ interface QuestionPages {
     _id: string;
     name: string;
     picture: string;
+    clerkId?: string;
   };
   upvotes?: string[];
   views?: number;
@@ -24,6 +28,7 @@ interface QuestionPages {
 }
 
 const QuestionCard = ({
+  clerkId,
   _id,
   title,
   tags,
@@ -37,9 +42,12 @@ const QuestionCard = ({
   answer = answer || [];
   upvotes = upvotes || [];
 
+  const showActionButtons = clerkId && clerkId === author.clerkId;
+  console.log(clerkId);
+  console.log(author.clerkId);
   return (
-    <div className="card-warpper p-9 sm:px-11 rounded-[10px]">
-      <div className="flex flex-col-reverse items-start justify-between gap-5 sm:flex-ros">
+    <div className="card-wrapper p-9 sm:px-11 rounded-[10px]">
+      <div className="flex flex-col-reverse items-start justify-between gap-5 sm:flex-row">
         <div>
           <span className="subtle-regular text-dark400_light700 line-clamp-1 flex sm:hidden">
             {getTimestamp(createdAt)}
@@ -50,7 +58,11 @@ const QuestionCard = ({
             </h3>
           </Link>
         </div>
-        {/* If signin add edit delete action */}
+        <SignedIn>
+          {showActionButtons && (
+            <EditDeleteAction type="Question" itemId={JSON.stringify(_id)} />
+          )}
+        </SignedIn>
       </div>
       <div className="mt-3.5 flex flex-wrap gap-2">
         {tags.map((tag) => (

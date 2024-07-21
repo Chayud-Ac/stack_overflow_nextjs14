@@ -14,6 +14,7 @@ export default async function Home() {
   questions = JSON.parse(JSON.stringify(questions)); // deep clone
   console.log(questions);
 
+  console.log(questions[0].author);
   return (
     <>
       <div className="flex w-full flex-col-reverse justify-between gap-4 sm:flex-row sm:items-center">
