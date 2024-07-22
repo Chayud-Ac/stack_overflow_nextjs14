@@ -7,14 +7,16 @@ import HomeFilter from "@/components/home/HomeFilter";
 import NoResults from "@/components/shared/NoResults";
 import QuestionCard from "@/components/cards/QuestionCard";
 import { getQuestions } from "@/lib/actions/question.action";
+import { SearchParamsProps } from "@/types";
 
-export default async function Home() {
-  const result = await getQuestions({});
+export default async function Home({ searchParams }: SearchParamsProps) {
+  const result = await getQuestions({
+    searchQuery: searchParams.q,
+  });
   let questions = result?.questions || [];
-  questions = JSON.parse(JSON.stringify(questions)); // deep clone
-  console.log(questions);
 
-  console.log(questions[0].author);
+  questions = JSON.parse(JSON.stringify(questions)); // deep clone
+
   return (
     <>
       <div className="flex w-full flex-col-reverse justify-between gap-4 sm:flex-row sm:items-center">

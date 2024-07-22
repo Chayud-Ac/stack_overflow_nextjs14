@@ -9,20 +9,34 @@ import {
   GetQuestionByIdParams,
   QuestionVoteParams,
   DeleteQuestionParams,
+  EditQuestionParams,
 } from "./shared.types";
 import User from "@/databases/user.model";
 import { revalidatePath } from "next/cache";
 import Answer from "@/databases/answer.model";
 import Interaction from "@/databases/interaction.model";
+import { FilterQuery } from "mongoose";
 
 export async function getQuestions(params: GetQuestionsParams) {
   try {
     connectToDatabase();
-    const questions = await Question.find({})
-      .populate({ path: "tags", model: Tag }) // populate is use to get all the information of the ref model. as tag key that store in question model only store id of key
-      .populate({ path: "author", model: User }); // populate is use to get all the information of the ref model. as User key that store in question model only store id of User
 
-    console.log("data sending from the Mongo", { questions });
+    const { searchQuery } = params;
+
+    const query: FilterQuery<typeof Question> = {};
+
+    if (searchQuery) {
+      query.$or = [
+        { title: { $regex: new RegExp(searchQuery, "i") } },
+        { content: { $regex: new RegExp(searchQuery, "i") } },
+      ];
+    }
+
+    const questions = await Question.find(query)
+      .populate({ path: "tags", model: Tag }) // populate is use to get all the information of the ref model. as tag key that store in question model only store id of key
+      .populate({ path: "author", model: User }) // populate is use to get all the information of the ref model. as User key that store in question model only store id of User
+      .sort({ createdAt: -1 });
+
     return { questions };
   } catch (error) {
     console.log(error);
@@ -149,6 +163,40 @@ export async function deleteQuestion(params: DeleteQuestionParams) {
       { $pull: { questions: questionId } }
     );
     revalidatePath(path);
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function editQuestion(params: EditQuestionParams) {
+  try {
+    connectToDatabase();
+    const { questionId, title, content, path } = params;
+
+    const question = await Question.findById(questionId).populate("tags");
+
+    if (!question) {
+      throw new Error("Question is not found");
+    }
+
+    question.title = title;
+    question.content = content;
+
+    await question.save();
+
+    revalidatePath(path);
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function getHotQuestions() {
+  try {
+    connectToDatabase();
+    const hotQuestions = await Question.find({})
+      .sort({ views: -1, upvotes: -1 })
+      .limit(5);
+    return hotQuestions;
   } catch (error) {
     console.log(error);
   }

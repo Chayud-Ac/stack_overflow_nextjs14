@@ -2,27 +2,18 @@ import Link from "next/link";
 import React from "react";
 import Image from "next/image";
 import RenderTag from "./RenderTag";
+import { getHotQuestions } from "@/lib/actions/question.action";
+import { getPopularTags } from "@/lib/actions/tag.actions";
 
-const RightSidebar = () => {
-  const hotQuestions = [
-    { _id: "1", title: "How do I use express as a custom server in NextJs" },
-    { _id: "2", title: "Cascading Deletes in SQLAlchemy" },
-    { _id: "3", title: "How to Perfectly Center a Div with Tailwind CSS" },
-    {
-      _id: "4",
-      title:
-        "Best practices for data fetching in a Next.js application with Server-Side Rendering (SSR)",
-    },
-    { _id: "5", title: "How do I use express as a custom server in NextJs" },
-  ];
+const RightSidebar = async () => {
+  const hotQuestionsRaw = await getHotQuestions();
 
-  const popularTages = [
-    { _id: "1", name: "javascript", totalQuestions: 5 },
-    { _id: "2", name: "react", totalQuestions: 5 },
-    { _id: "3", name: "next", totalQuestions: 5 },
-    { _id: "4", name: "vue", totalQuestions: 3 },
-    { _id: "5", name: "redux", totalQuestions: 10 },
-  ];
+  const hotQuestions = JSON.parse(JSON.stringify(hotQuestionsRaw)); // this one help to convert the complex object into normal object which can be pass to the client component or we can basically read the properties from reponse object more easier
+  console.log(hotQuestions);
+
+  const popularTagsRaw = await getPopularTags();
+  const popularTags = JSON.parse(JSON.stringify(popularTagsRaw));
+  console.log(popularTags);
 
   return (
     <section
@@ -33,9 +24,9 @@ const RightSidebar = () => {
       <div>
         <h3 className="h3-bold text-dark200_light900">Top Question</h3>
         <div className="mt-7 flex w-full flex-col gap-[30px]">
-          {hotQuestions.map((question) => (
+          {hotQuestions.map((question: any) => (
             <Link
-              href={`/questions/${question._id}`}
+              href={`/question/${question._id}`}
               key={question._id}
               className="flex cursor-pointer items-center justify-between gap-7"
             >
@@ -58,12 +49,12 @@ const RightSidebar = () => {
           Popular Tags Questions
         </h3>
         <div className="mt-7 flex flex-col gap-4">
-          {popularTages.map((tag) => (
+          {popularTags.map((tag: any) => (
             <RenderTag
               key={tag._id}
               _id={tag._id}
               name={tag.name}
-              totalQuestions={tag.totalQuestions}
+              totalQuestions={tag.numberOfQuestions}
               showCount={true}
             />
           ))}
