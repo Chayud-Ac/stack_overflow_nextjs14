@@ -110,6 +110,8 @@ const Page = async ({ params, searchParams }: any) => {
         questionId={result._id}
         userId={mongoUser._id} // is the same as the id of the authorId of the question
         totalAnswers={result.answers.length}
+        page={searchParams.page}
+        filter={searchParams.filter}
       />
 
       <Answer

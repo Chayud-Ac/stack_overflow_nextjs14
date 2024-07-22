@@ -20,8 +20,12 @@ import { FilterQuery } from "mongoose";
 export async function getQuestions(params: GetQuestionsParams) {
   try {
     connectToDatabase();
+    // pageSize is the amount of question that display on a single page
+    // so this case pageSize is 2 then 2 questions will display on a single page
+    const { searchQuery, filter, page = 1, pageSize = 2 } = params;
 
-    const { searchQuery } = params;
+    // Calculate the number of posts to skip based on the page number and page size;
+    const skipAmount = (page - 1) * pageSize; // skip to page 2  then ( 2 - 1 ) * 2 = 2 posts skip , skip to page 3 , then (3 - 1 ) * 2 = 4 posts skip
 
     const query: FilterQuery<typeof Question> = {};
 
@@ -32,12 +36,37 @@ export async function getQuestions(params: GetQuestionsParams) {
       ];
     }
 
+    let sortOptions = {};
+
+    switch (filter) {
+      case "newest":
+        sortOptions = { createdAt: -1 };
+        break;
+      case "frequent":
+        sortOptions = { views: -1 };
+        break;
+      case "unanswered":
+        query.answers = { $size: 0 };
+        break;
+
+      default:
+        break;
+    }
+
     const questions = await Question.find(query)
       .populate({ path: "tags", model: Tag }) // populate is use to get all the information of the ref model. as tag key that store in question model only store id of key
       .populate({ path: "author", model: User }) // populate is use to get all the information of the ref model. as User key that store in question model only store id of User
-      .sort({ createdAt: -1 });
+      .skip(skipAmount)
+      .limit(pageSize)
+      .sort(sortOptions);
 
-    return { questions };
+    // findout that is there the limit of question of going to the next page // no question no next page
+    const totalQuestions = await Question.countDocuments(query);
+    // skipAmount is the total questions that already skip
+    // questions.length is the question that show on the single page
+    const isNext = totalQuestions > skipAmount + questions.length;
+
+    return { questions, isNext };
   } catch (error) {
     console.log(error);
   }

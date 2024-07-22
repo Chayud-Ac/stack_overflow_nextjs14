@@ -8,12 +8,18 @@ import NoResults from "@/components/shared/NoResults";
 import QuestionCard from "@/components/cards/QuestionCard";
 import { getQuestions } from "@/lib/actions/question.action";
 import { SearchParamsProps } from "@/types";
+import Pagination from "@/components/shared/Pagination";
 
 export default async function Home({ searchParams }: SearchParamsProps) {
   const result = await getQuestions({
     searchQuery: searchParams.q,
+    filter: searchParams.filter,
+    page: searchParams.page ? +searchParams.page : 1,
   });
+
+  // TODO fetch recommended later
   let questions = result?.questions || [];
+  let isNext = result?.isNext;
 
   questions = JSON.parse(JSON.stringify(questions)); // deep clone
 
@@ -70,6 +76,12 @@ export default async function Home({ searchParams }: SearchParamsProps) {
             linkTitle="Ask a question"
           />
         )}
+      </div>
+      <div className="mt-10">
+        <Pagination
+          pageNumber={searchParams?.page ? +searchParams.page : 1}
+          isNext={isNext}
+        />
       </div>
     </>
   );
