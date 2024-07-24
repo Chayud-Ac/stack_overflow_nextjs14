@@ -8,6 +8,7 @@ import { auth } from "@clerk/nextjs/server";
 import { getSavedQuestions } from "@/lib/actions/user.action";
 import { SearchParamsProps } from "@/types";
 import Pagination from "@/components/shared/Pagination";
+import Loading from "./loading";
 
 export default async function Home({ searchParams }: SearchParamsProps) {
   const { userId } = auth();
