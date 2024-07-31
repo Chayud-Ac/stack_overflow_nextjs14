@@ -9,11 +9,9 @@ const RightSidebar = async () => {
   const hotQuestionsRaw = await getHotQuestions();
 
   const hotQuestions = JSON.parse(JSON.stringify(hotQuestionsRaw)); // this one help to convert the complex object into normal object which can be pass to the client component or we can basically read the properties from reponse object more easier
-  console.log(hotQuestions);
 
   const popularTagsRaw = await getPopularTags();
   const popularTags = JSON.parse(JSON.stringify(popularTagsRaw));
-  console.log(popularTags);
 
   return (
     <section

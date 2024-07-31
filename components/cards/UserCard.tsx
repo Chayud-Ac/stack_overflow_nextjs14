@@ -14,23 +14,6 @@ interface Props {
   };
 }
 
-// {
-//   _id: '668ffed59dcfabbdc1a63808',
-//   clerkId: 'user_2j6gPQOsDp9MONhwmrfCRxcB7a4',
-//   name: 'Chayud',
-//   username: 'Ac_Chayud',
-//   email: 'ac.chayud02@gmail.com',
-//   picture:
-//     'https://img.clerk.com/eyJ0eXBlIjoicHJveHkiLCJzcmMiOiJodHRwczovL2ltYWdlcy5jbGVyay5kZXYvb2F1dGhfZ29vZ2xlL2ltZ18yajZnUE5tSkxYdTFGTTc3MDN2ZFRQUE5TdlAifQ',
-//   reputation: 0,
-//   saved: [ '6699278b25ed602a972e355a', '669a7f8efc9642187dd166f3' ],
-//   joinedAt: '2024-07-11T15:48:37.488Z',
-//   __v: 0,
-//   bio: 'Just ordinary person who trying to be better and better',
-//   location: 'Bangkok',
-//   portfolioWebsite: 'https://github.com/Chayud-Ac'
-// }
-
 const UserCard = async ({ user }: Props) => {
   const interactedTags = await getTopInteractedTags({ userId: user._id });
 

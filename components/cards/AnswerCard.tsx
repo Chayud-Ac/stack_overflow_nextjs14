@@ -32,8 +32,6 @@ const AnswerCard = ({
 }: Props) => {
   const showActionButtons = clerkId && clerkId === author.clerkId; // this use to show the action button if user is sign in and the id is matching
 
-  console.log(clerkId);
-  console.log(author.clerkId);
   return (
     <Link
       href={`/question/${question._id}/#${_id}`}

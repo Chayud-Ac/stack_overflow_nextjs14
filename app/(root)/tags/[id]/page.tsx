@@ -1,9 +1,7 @@
 import QuestionCard from "@/components/cards/QuestionCard";
-import Filter from "@/components/shared/Filter";
 import NoResults from "@/components/shared/NoResults";
 import Pagination from "@/components/shared/Pagination";
 import LocalSearchbar from "@/components/shared/search/LocalSearchbar";
-import { IQuestion } from "@/databases/question.model";
 import { getQuestionByTagId } from "@/lib/actions/tag.actions";
 import { URLProps } from "@/types";
 import React from "react";
