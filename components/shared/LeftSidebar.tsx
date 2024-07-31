@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { sidebarLinks } from "@/constants";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
@@ -10,13 +10,17 @@ import { SignedOut, useAuth } from "@clerk/nextjs";
 const LeftSidebar = () => {
   const pathname = usePathname();
   const { userId } = useAuth();
+  const [activePath, setActivePath] = useState("");
+  useEffect(() => {
+    setActivePath(pathname);
+  }, [pathname]);
   console.log(pathname);
 
   return (
     <section className="background-light900_dark200 light-border custom-scrollbar sticky left-0 top-0 flex h-screen flex-col justify-between overflow-y-auto border-r p-6 pt-36 shadow-light-300 dark:shadow-none max-sm:hidden lg:w-[266px]">
       <div className="flex flex-1 flex-col gap-6">
         {sidebarLinks.map((item) => {
-          const isActive: boolean = pathname === item.route;
+          const isActive: boolean = activePath === item.route;
           if (item.route === "/profile") {
             if (userId) {
               item.route = `/profile/${userId}`;
@@ -40,7 +44,7 @@ const LeftSidebar = () => {
                 alt={item.label}
                 width={20}
                 height={20}
-                className={`${isActive ? "" : "invert-colors"}`}
+                className={`${isActive ? "" : "invert-colors"} w-auto h-auto`}
               />
               <p
                 className={`${isActive ? "base-bold" : "base-medium"} max-lg:hidden`}
@@ -61,7 +65,7 @@ const LeftSidebar = () => {
                 alt="login"
                 width={20}
                 height={20}
-                className="invert-colors lg:hidden"
+                className="invert-colors lg:hidden w-auto h-auto"
               />
               <span className="primary-text-gradient max-lg:hidden">
                 Log In

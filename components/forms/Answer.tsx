@@ -79,7 +79,6 @@ const Answer = ({ question, questionId, authorId }: Props) => {
         }
       );
 
-      console.log(process.env.NEXT_PUBLIC_SERVER_URL);
       const aiAnswer = await response.json();
       console.log(aiAnswer);
 
@@ -120,7 +119,7 @@ const Answer = ({ question, questionId, authorId }: Props) => {
                 alt="star"
                 width={12}
                 height={12}
-                className="object-contain"
+                className="object-contain w-auto h-auto"
               />
               Generate AI answer
             </>
@@ -176,7 +175,7 @@ const Answer = ({ question, questionId, authorId }: Props) => {
                       content_style:
                         "body { font-family:Inter; font-size:16px }",
                       skin: mode === "dark" ? "oxide-dark" : "oxide",
-                      content_css: mode === "dark" ? "dark" : "light",
+                      content_css: mode === "dark" ? "dark" : "default",
                     }}
                   />
                 </FormControl>

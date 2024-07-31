@@ -26,6 +26,9 @@ const LocalSearchbar = ({
   const searchParams = useSearchParams();
 
   const query = searchParams.get("q");
+  console.log(query);
+  console.log(searchParams.get("page"));
+
   const [search, setSearch] = useState(query || "");
 
   useEffect(() => {
@@ -73,7 +76,7 @@ const LocalSearchbar = ({
         onChange={(e) => {
           setSearch(e.target.value);
         }}
-        className="paragraph-regular no-focus placeholder background-light800_darkgradient border-none shadow-none outline-none"
+        className="paragraph-regular no-focus placeholder text-dark400_light700 border-none bg-transparent shadow-none outline-none"
       />
 
       {iconPosition === "right" && (

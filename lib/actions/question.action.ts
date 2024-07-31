@@ -10,6 +10,7 @@ import {
   QuestionVoteParams,
   DeleteQuestionParams,
   EditQuestionParams,
+  RecommendedParams,
 } from "./shared.types";
 import User from "@/databases/user.model";
 import { revalidatePath } from "next/cache";
@@ -22,12 +23,12 @@ export async function getQuestions(params: GetQuestionsParams) {
     connectToDatabase();
     // pageSize is the amount of question that display on a single page
     // so this case pageSize is 2 then 2 questions will display on a single page
-    const { searchQuery, filter, page = 1, pageSize = 2 } = params;
+    const { searchQuery, filter, page = 1, pageSize = 8 } = params;
 
     // Calculate the number of posts to skip based on the page number and page size;
     const skipAmount = (page - 1) * pageSize; // skip to page 2  then ( 2 - 1 ) * 2 = 2 posts skip , skip to page 3 , then (3 - 1 ) * 2 = 4 posts skip
 
-    const query: FilterQuery<typeof Question> = {};
+    const query: FilterQuery<typeof Question> = {}; //
 
     if (searchQuery) {
       query.$or = [
@@ -56,9 +57,9 @@ export async function getQuestions(params: GetQuestionsParams) {
     const questions = await Question.find(query)
       .populate({ path: "tags", model: Tag }) // populate is use to get all the information of the ref model. as tag key that store in question model only store id of key
       .populate({ path: "author", model: User }) // populate is use to get all the information of the ref model. as User key that store in question model only store id of User
+      .sort(sortOptions)
       .skip(skipAmount)
-      .limit(pageSize)
-      .sort(sortOptions);
+      .limit(pageSize);
 
     // findout that is there the limit of question of going to the next page // no question no next page
     const totalQuestions = await Question.countDocuments(query);
@@ -124,6 +125,7 @@ export async function getQuestionById(params: GetQuestionByIdParams) {
         model: User,
         select: "_id clerkId name picture",
       });
+
     return question;
   } catch (error) {}
 }
@@ -255,5 +257,76 @@ export async function getHotQuestions() {
     return hotQuestions;
   } catch (error) {
     console.log(error);
+  }
+}
+
+export async function getRecommendedQuestions(params: RecommendedParams) {
+  try {
+    await connectToDatabase();
+
+    const { userId, page = 1, pageSize = 20, searchQuery } = params;
+
+    // find user
+    const user = await User.findOne({ clerkId: userId });
+
+    if (!user) {
+      throw new Error("user not found");
+    }
+
+    const skipAmount = (page - 1) * pageSize;
+
+    // Find the user's interactions
+    const userInteractions = await Interaction.find({ user: user._id })
+      .populate("tags")
+      .exec();
+
+    // Extract tags from user's interactions
+    const userTags = userInteractions.reduce((tags, interaction) => {
+      if (interaction.tags) {
+        tags = tags.concat(interaction.tags);
+      }
+      return tags;
+    }, []);
+
+    // Get distinct tag IDs from user's interactions
+    const distinctUserTagIds = [
+      // @ts-ignore
+      ...new Set(userTags.map((tag: any) => tag._id)),
+    ];
+
+    const query: FilterQuery<typeof Question> = {
+      $and: [
+        { tags: { $in: distinctUserTagIds } }, // Questions with user's tags
+        { author: { $ne: user._id } }, // Exclude user's own questions
+      ],
+    };
+
+    if (searchQuery) {
+      query.$or = [
+        { title: { $regex: searchQuery, $options: "i" } },
+        { content: { $regex: searchQuery, $options: "i" } },
+      ];
+    }
+
+    const totalQuestions = await Question.countDocuments(query);
+
+    const recommendedQuestions = await Question.find(query)
+      .populate({
+        path: "tags",
+        model: Tag,
+      })
+      .populate({
+        path: "author",
+        model: User,
+      })
+      .skip(skipAmount)
+      .limit(pageSize);
+
+    const isNext = totalQuestions > skipAmount + recommendedQuestions.length;
+
+    return { questions: recommendedQuestions, isNext };
+  } catch (error) {
+    console.error("Error getting recommended questions:", error);
+    throw error;
   }
 }

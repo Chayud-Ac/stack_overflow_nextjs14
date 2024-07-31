@@ -1,4 +1,3 @@
-import React from "react";
 import { useTheme } from "@/context/ThemeProvider";
 import {
   Menubar,
@@ -21,7 +20,7 @@ const Theme = () => {
           {mode === "light" ? (
             <Image
               className="active-theme"
-              src="assets/icons/sun.svg"
+              src="/assets/icons/sun.svg"
               width={20}
               height={20}
               alt="sun"
@@ -29,14 +28,14 @@ const Theme = () => {
           ) : (
             <Image
               className="active-theme"
-              src="assets/icons/moon.svg"
+              src="/assets/icons/moon.svg"
               width={20}
               height={20}
               alt="moon"
             />
           )}
         </MenubarTrigger>
-        <MenubarContent className="absolute right-[-3rem] mt-3 min-w-[120px] rounded border py-2 dark:border-dark-400 dark:bg-dark-300">
+        <MenubarContent className="absolute right-[-3rem] mt-3 min-w-[120px] rounded border py-2 bg-light-900  dark:border-dark-400 dark:bg-dark-300">
           {themes.map((item) => (
             <MenubarItem
               key={item.value}
@@ -48,7 +47,7 @@ const Theme = () => {
                   localStorage.removeItem("theme");
                 }
               }}
-              className="flex items-center gap-4 px-2.5 py-2 dark:hover:bg-light-400 hover:bg-slate-200"
+              className="flex items-center gap-4 px-2.5 py-2 dark:hover:bg-light-400 hover:bg-slate-200 focus:bg-light-800 dark:focus:bg-dark-400 cursor-pointer"
             >
               <Image
                 src={item.icon}

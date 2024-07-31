@@ -7,16 +7,15 @@ import User from "@/databases/user.model";
 import Answer from "@/databases/answer.model";
 import Tag from "@/databases/tag.model";
 
-const SearchableType = ["question", "answer", "user", "tag"];
-
 export async function globalSearch(params: SearchParams) {
   try {
     await connectToDatabase();
 
     const { query, type } = params;
-    const regexQuery = { $regex: query, $options: "i" };
 
-    let results: any = [];
+    let results: any = []; // reponse { title , type , _id  }
+
+    const SearchableType = ["question", "answer", "user", "tag"];
 
     const modelAndTypes = [
       { model: Question, searchField: "title", type: "question" },
@@ -27,10 +26,7 @@ export async function globalSearch(params: SearchParams) {
 
     const typeLower: string | undefined = type?.toLowerCase();
 
-    console.log("Normalized type:", typeLower);
-
-    const isIncluded = typeLower && SearchableType.includes(typeLower); // Check if typeLower is included in SearchableType
-    console.log("Is type included:", isIncluded);
+    const regexQuery = { $regex: query, $options: "i" };
 
     if (!typeLower || !SearchableType.includes(typeLower)) {
       // seach everything as there is is no specific type  to seach or so type match with the SeachableType
@@ -39,8 +35,11 @@ export async function globalSearch(params: SearchParams) {
           .find({ [searchField]: regexQuery })
           .limit(2);
 
-        results.push(
-          ...queryResults.map((item) => ({
+        // return document ออกมา แค่ สอง document อยู่ในรูปแบบ array of document [ {doc1 }  , {doc2 }  ]
+        // เรา จะ push เข้าไป ใน array result
+
+        queryResults.forEach((item) => {
+          results.push({
             title:
               type === "answer"
                 ? `Answer containing ${query}`
@@ -52,13 +51,12 @@ export async function globalSearch(params: SearchParams) {
                 : type === "answer"
                   ? item.question
                   : item._id,
-          }))
-        );
+          });
+        });
       }
     } else {
       const modelInfo = modelAndTypes.find((item) => item.type === typeLower);
-      console.log(typeLower);
-      console.log(modelInfo);
+
       if (!modelInfo) {
         throw new Error("invalid search type");
       }

@@ -34,6 +34,8 @@ interface Props {
 const UserCard = async ({ user }: Props) => {
   const interactedTags = await getTopInteractedTags({ userId: user._id });
 
+  console.log(interactedTags);
+
   return (
     <div className="shadow-light100_darknone w-full max-xs:min-w-full xs:w-[260px]">
       <div className="background-light900_dark200 light-border flex w-full flex-col items-center justify-center rounded-2xl border p-8">

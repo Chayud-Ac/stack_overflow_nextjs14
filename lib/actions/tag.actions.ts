@@ -10,6 +10,7 @@ import {
 import User from "@/databases/user.model";
 import { FilterQuery } from "mongoose";
 import Question from "@/databases/question.model";
+import { skip } from "node:test";
 
 export async function getTopInteractedTags(params: GetTopInteractedTagsParams) {
   try {
@@ -22,6 +23,7 @@ export async function getTopInteractedTags(params: GetTopInteractedTagsParams) {
       throw new Error("User not found");
     }
 
+    console.log(user);
     // Find interactions for the user and group by tags...
 
     return [
@@ -38,7 +40,7 @@ export async function getTopInteractedTags(params: GetTopInteractedTagsParams) {
 export async function getAllTags(params: GetAllTagsParams) {
   try {
     connectToDatabase();
-    const { searchQuery, filter, page = 1, pageSize = 3 } = params;
+    const { searchQuery, filter, page = 1, pageSize = 5 } = params;
     const skipAmount = (page - 1) * pageSize;
     const query: FilterQuery<typeof Tag> = {};
 
@@ -50,7 +52,7 @@ export async function getAllTags(params: GetAllTagsParams) {
 
     switch (filter) {
       case "popular":
-        sortOptions = { questions: -1 };
+        sortOptions = { questions: 1 };
         break;
       case "recent":
         sortOptions = { createdAt: -1 };
@@ -88,9 +90,7 @@ export async function getQuestionByTagId(params: GetQuestionsByTagIdParams) {
     const { tagId, page = 1, pageSize = 10, searchQuery } = params;
     const skipAmount = (page - 1) * pageSize;
 
-    const tagFilter: FilterQuery<ITag> = { _id: tagId };
-
-    const tag = await Tag.findOne({ tagFilter }).populate({
+    const tag = await Tag.findById(tagId).populate({
       path: "questions",
       model: Question,
       match: searchQuery
@@ -106,6 +106,8 @@ export async function getQuestionByTagId(params: GetQuestionsByTagIdParams) {
         { path: "author", model: User, select: "_id clerkId name picture" },
       ],
     });
+
+    console.log(tag.name);
 
     if (!tag) {
       throw new Error("Tag not found");

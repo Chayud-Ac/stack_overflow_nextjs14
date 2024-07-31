@@ -9,11 +9,15 @@ import { URLProps } from "@/types";
 import React from "react";
 
 const Page = async ({ params, searchParams }: URLProps) => {
+  console.log(params);
+
   const result = await getQuestionByTagId({
     tagId: params.id,
     page: searchParams.page ? +searchParams.page : 1,
     searchQuery: searchParams.q,
   });
+
+  console.log(result.tagTitle);
   return (
     <>
       <h1 className="h1-bold text-dark100_light900">{result.tagTitle}</h1>

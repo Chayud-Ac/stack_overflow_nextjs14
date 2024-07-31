@@ -67,14 +67,18 @@ interface UrlQueryParams {
 }
 
 export function formUrlQuery({ params, key, value }: UrlQueryParams) {
+  // key = sort , value = newest
+  // parse the object to be in javascript object
+  // if params sort=newest javascript object will be { sort : "newest" }
   const currentUrl = qs.parse(params);
-  currentUrl[key] = value;
+  currentUrl[key] = value; // { sort : "newest" }
   return qs.stringifyUrl(
+    // convert back to the stringifyUrl to be in format of ?sort=newest
     {
       url: window.location.pathname,
       query: currentUrl,
-    },
-    { skipNull: true }
+    }, // localhost3000/question?sort=newest
+    { skipNull: true } // omit and skip all the null value
   );
 }
 

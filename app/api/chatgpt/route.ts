@@ -1,8 +1,10 @@
 import { NextResponse } from "next/server";
 
+// server side endpoint
+
 export async function POST(req: Request) {
   try {
-    const { question } = await req.json();
+    const { question } = await req.json(); // req ที่มาจากตัว component
     const response = await fetch(`https://api.edenai.run/v2/text/generation`, {
       method: "POST",
       headers: {
